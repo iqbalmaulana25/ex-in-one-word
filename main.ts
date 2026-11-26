@@ -22,9 +22,22 @@ const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 const line = "Unsubscribed";
 
 // Gate guard: exactly one word, 1-111 characters (counted with the trailing newline).
-if (/\s/.test(line.trim()) || line.trim().length === 0 || line.length + 1 > 111) {
-  throw new Error(`entry line breaks the gate: ${line.length} characters`);
+// Split out so the rule is stated once and the failure names the rule it broke.
+function assertSingleWord(word: string): string {
+  const trimmed = word.trim();
+  if (trimmed.length === 0) {
+    throw new Error("entry line is empty, the gate needs 1-111 characters");
+  }
+  if (/\s/.test(trimmed)) {
+    throw new Error(`entry line must be exactly one word, got: ${word}`);
+  }
+  if (word.length + 1 > 111) {
+    throw new Error(`entry line breaks the gate: ${word.length} characters`);
+  }
+  return word;
 }
+
+assertSingleWord(line);
 
 mkdirSync(outDir, { recursive: true });
 writeFileSync(`${outDir}/entry.txt`, line + "\n", "utf8");
