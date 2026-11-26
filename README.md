@@ -15,4 +15,4 @@ cat /output/entry.txt
 
 ## Entry
 
-> Subscription
+> Unsubscribed
